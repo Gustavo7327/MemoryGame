@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,8 +17,12 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -25,14 +31,18 @@ public class MemoryGame extends Application{
     private int WIDTH = 600;
     private int HEIGHT = 600;
 
+    private Text scoreText;
+    private Text attemptsText;
+    private Text gameOver;
+
     private String[] images = {"Adao.png","Armin.png","Chelsea.png","Dog.png","Edward.png","Gojo.png","Kakashi.png","Kirito.png","Komi.png","Kunigami.png","Kurapika.png","Liebe.png","Luffy.png","Miki.png","Power.png","Reigen.png","Simon.png","Tenma.png","Urahara.png","Yoriichi.png"};
 
     private List<Image> list = new ArrayList<Image>();
 
     private static final int NUM_OF_PAIRS = 20;
     private static final int NUM_PER_ROW = 8;
-    private int score;
-    private int attempts = 28;
+    private static int score = 0;
+    private static int attempts = 2;
     private int clickCount = 2;
     private Img selected = null;
 
@@ -40,6 +50,12 @@ public class MemoryGame extends Application{
     public void start(Stage stage) throws Exception {
 
         Pane root = new Pane();
+        Pane root2 = new Pane();
+        root2.setPrefSize(300, 400);
+        root2.setLayoutX(95);
+        root2.setLayoutY(90);
+        
+
         root.setPrefSize(WIDTH, HEIGHT);
 
         for(int i = 0; i < 20; i++){
@@ -59,17 +75,49 @@ public class MemoryGame extends Application{
             Img imagem = imgs.get(i);
             imagem.setTranslateX(50 * (i % NUM_PER_ROW));
             imagem.setTranslateY(50 * (i / NUM_PER_ROW));
-            root.getChildren().add(imagem);
+            root2.getChildren().add(imagem);
         }
-        
+
+        gameOver = new Text();
+        scoreText = new Text();
+        attemptsText = new Text();
+        root.getChildren().addAll(root2, scoreText, attemptsText, gameOver);
+
+        Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(scoreText,attemptsText, gameOver)));
+        tl.setCycleCount(Timeline.INDEFINITE);
+
         Scene scene = new Scene(root);
-        
         stage.setTitle("Memory Game");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+        tl.play();
     }
 
+    public void run(Text scoreText, Text attemptsText, Text gameOver){
+        scoreText.setText("Score: "+score);
+        scoreText.setFont(Font.font(26));
+        scoreText.setStroke(Color.GREEN);
+        scoreText.setStrokeWidth(3);
+        scoreText.setLayoutX(20);
+        scoreText.setLayoutY(50);
+
+        attemptsText.setText("Attempts: "+attempts);
+        attemptsText.setFont(Font.font(26));
+        attemptsText.setStroke(Color.GREEN);
+        attemptsText.setStrokeWidth(3);
+        attemptsText.setLayoutX(400);
+        attemptsText.setLayoutY(50);
+
+        if(attempts == 0){
+            gameOver.setText("Game Over");
+            gameOver.setFont(Font.font(35));
+            gameOver.setStroke(Color.RED);
+            gameOver.setStrokeWidth(4);
+            gameOver.setLayoutX(190);
+            gameOver.setLayoutY(430);
+        }
+    }
 
     private class Img extends StackPane{
 
@@ -90,7 +138,7 @@ public class MemoryGame extends Application{
         }
 
         public void handleMouseClick(MouseEvent event){
-            if(isOpen() || clickCount == 0)return;
+            if(isOpen() || clickCount == 0 || attempts == 0)return;
                 
                 clickCount--;
 
@@ -103,9 +151,12 @@ public class MemoryGame extends Application{
                         if(!sameValue(selected)){
                             selected.close();
                             this.close();
+                        } else{
+                            score++;
                         }
                         selected = null;
                         clickCount = 2;
+                        attempts--;
                     });
                     
                 }
