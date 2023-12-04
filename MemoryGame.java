@@ -9,7 +9,6 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -54,7 +53,7 @@ public class MemoryGame extends Application{
         Pane root2 = new Pane();
         root2.setPrefSize(300, 400);
         root2.setLayoutX(95);
-        root2.setLayoutY(90);
+        root2.setLayoutY(110);
         
 
         root.setPrefSize(WIDTH, HEIGHT);
@@ -85,14 +84,28 @@ public class MemoryGame extends Application{
         restart.setStroke(Color.GREEN);
         restart.setStrokeWidth(3);
         restart.setTextAlignment(TextAlignment.CENTER);
-        restart.setLayoutX(150);
-        restart.setLayoutY(500);
+        restart.setLayoutX(170);
+        restart.setLayoutY(530);
         restart.setOnMouseClicked(e -> {
-            for(int i = 0; i< imgs.size(); i++){
-                imgs.get(i).close();
-            }
+
             gameOver.setVisible(false);
+
+            imgs.clear();
+            
+            for(int i = 0; i < NUM_OF_PAIRS; i++){
+                imgs.add(new Img(list.get(i)));
+                imgs.add(new Img(list.get(i)));
+            }
+
             Collections.shuffle(imgs);
+
+            for(int i = 0; i < imgs.size(); i++){
+                Img imagem = imgs.get(i);
+                imagem.setTranslateX(50 * (i % NUM_PER_ROW));
+                imagem.setTranslateY(50 * (i / NUM_PER_ROW));
+                root2.getChildren().add(imagem);
+            }
+
             attempts = 34;
             score = 0;
         });
@@ -102,7 +115,7 @@ public class MemoryGame extends Application{
         text.setFont(Font.font(14));
         text.setStroke(Color.GREEN);
         text.setStrokeWidth(2);
-        text.setLayoutX(220);
+        text.setLayoutX(210);
         text.setLayoutY(580);
 
         gameOver = new Text();
@@ -143,8 +156,8 @@ public class MemoryGame extends Application{
             gameOver.setFont(Font.font(35));
             gameOver.setStroke(Color.RED);
             gameOver.setStrokeWidth(4);
-            gameOver.setLayoutX(190);
-            gameOver.setLayoutY(430);
+            gameOver.setLayoutX(195);
+            gameOver.setLayoutY(440);
             gameOver.setVisible(true);
         }
     }
