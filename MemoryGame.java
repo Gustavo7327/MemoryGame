@@ -9,6 +9,7 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -17,12 +18,12 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -42,7 +43,7 @@ public class MemoryGame extends Application{
     private static final int NUM_OF_PAIRS = 20;
     private static final int NUM_PER_ROW = 8;
     private static int score = 0;
-    private static int attempts = 2;
+    private static int attempts = 34;
     private int clickCount = 2;
     private Img selected = null;
 
@@ -78,14 +79,42 @@ public class MemoryGame extends Application{
             root2.getChildren().add(imagem);
         }
 
+        Text restart = new Text();
+        restart.setText("Click here to Restart");
+        restart.setFont(Font.font(25));
+        restart.setStroke(Color.GREEN);
+        restart.setStrokeWidth(3);
+        restart.setTextAlignment(TextAlignment.CENTER);
+        restart.setLayoutX(150);
+        restart.setLayoutY(500);
+        restart.setOnMouseClicked(e -> {
+            for(int i = 0; i< imgs.size(); i++){
+                imgs.get(i).close();
+            }
+            gameOver.setVisible(false);
+            Collections.shuffle(imgs);
+            attempts = 34;
+            score = 0;
+        });
+
+        Text text = new Text();
+        text.setText("Made by Gustavo7327");
+        text.setFont(Font.font(14));
+        text.setStroke(Color.GREEN);
+        text.setStrokeWidth(2);
+        text.setLayoutX(220);
+        text.setLayoutY(580);
+
         gameOver = new Text();
         scoreText = new Text();
         attemptsText = new Text();
-        root.getChildren().addAll(root2, scoreText, attemptsText, gameOver);
+        root.getChildren().addAll(root2, scoreText, attemptsText, gameOver, restart, text);
+        root.setStyle("-fx-background-color: black;");
 
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(scoreText,attemptsText, gameOver)));
         tl.setCycleCount(Timeline.INDEFINITE);
 
+        
         Scene scene = new Scene(root);
         stage.setTitle("Memory Game");
         stage.setScene(scene);
@@ -116,6 +145,7 @@ public class MemoryGame extends Application{
             gameOver.setStrokeWidth(4);
             gameOver.setLayoutX(190);
             gameOver.setLayoutY(430);
+            gameOver.setVisible(true);
         }
     }
 
@@ -128,7 +158,7 @@ public class MemoryGame extends Application{
             imv = new ImageView(image);
             setAlignment(Pos.CENTER);
             getChildren().add(imv);
-            setStyle("-fx-border-color: black; -fx-border-width: 2");
+            setStyle("-fx-border-color: green; -fx-border-width: 2");
 
             setBackground(new Background(new BackgroundImage(new Image(getClass().getResourceAsStream("Carta.png")),BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,BackgroundSize.DEFAULT)));
 
