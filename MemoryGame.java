@@ -151,13 +151,24 @@ public class MemoryGame extends Application{
         attemptsText.setLayoutX(400);
         attemptsText.setLayoutY(50);
 
-        if(attempts == 0){
+        if(score == 20){
+            gameOver.setText("You Win");
+            gameOver.setFont(Font.font(35));
+            gameOver.setStroke(Color.GREEN);
+            gameOver.setStrokeWidth(4);
+            gameOver.setLayoutX(195);
+            gameOver.setLayoutY(440);
+            gameOver.setTextAlignment(TextAlignment.CENTER);
+            gameOver.setVisible(true);
+        }
+        else if(attempts == 0){
             gameOver.setText("Game Over");
             gameOver.setFont(Font.font(35));
             gameOver.setStroke(Color.RED);
             gameOver.setStrokeWidth(4);
             gameOver.setLayoutX(195);
             gameOver.setLayoutY(440);
+            gameOver.setTextAlignment(TextAlignment.CENTER);
             gameOver.setVisible(true);
         }
     }
